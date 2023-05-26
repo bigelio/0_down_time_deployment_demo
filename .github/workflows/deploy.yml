@@ -55,7 +55,7 @@ jobs:
           cat >>~/.ssh/config <<END
           Host demo
             HostName $HOSTNAME
-            User $USER_NAME
+            User ubuntu
             IdentityFile ~/.ssh/deploy.key
             StrictHostKeyChecking no
           END
