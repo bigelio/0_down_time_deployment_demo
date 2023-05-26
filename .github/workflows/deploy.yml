@@ -30,9 +30,9 @@ jobs:
           DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
         run: |
           docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
-          docker build --platform linux/amd64,linux/arm64 --tag bigelio/web-app:latest -f ./web-app/Dockerfile .
+          docker build  --tag bigelio/web-app:latest -f ./web-app/Dockerfile .
           docker push bigelio/web-app:latest
-          docker build --platform linux/amd64,linux/arm64 --tag bigelio/api-app:latest -f ./api-app/Dockerfile .
+          docker build  --tag bigelio/api-app:latest -f ./api-app/Dockerfile .
           docker push bigelio/api-app:latest
 
       - name: deploy to server
