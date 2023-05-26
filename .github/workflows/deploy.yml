@@ -1,0 +1,59 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
+      - name: Audit dependencies
+        run: yarn audit
+
+  build-docker-image:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Build, tag, and push image to docker hub
+        id: build_image_step
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+          DOCKERHUB_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+          DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+        run: |
+          docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
+          docker build --platform linux/amd64,linux/arm64 --tag bigelio/web-app:latest -f ./web-app/Dockerfile .
+          docker push bigelio/web-app:latest
+          docker build --platform linux/amd64,linux/arm64 --tag bigelio/api-app:latest -f ./api-app/Dockerfile .
+          docker push bigelio/api-app:latest
+
+      - name: deploy to server
+        env:
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+          HOSTNAME: ${{ secrets.HOSTNAME  }}
+          USER_NAME: ${{ secrets.USER_NAME  }}
+          VERSION: ${{ secrets.VERSION  }}
+          APP_PORT: ${{ secrets.APP_PORT  }}
+          IMAGE_TAG: ${{ github.sha }}
+          DOCKERHUB_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+          DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+        run: |
+          chmod +x ./deploy.sh
+          # get the private key from the github env and set  necessary permissions
+          echo "$PRIVATE_KEY" > deploy_key && chmod 600 deploy_key
+
+          # Login into remote server
+          ssh -o StrictHostKeyChecking=no -i deploy_key ${USER_NAME}@${HOSTNAME}
+          # deploy new version of the app container
+          ./deploy.sh
+          # start the rest of services
+          docker-compose up
