@@ -61,6 +61,6 @@ jobs:
           END
 
           # deploy new version of the app container
-          ssh demo 'git clone git@github.com:bigelio/0_down_time_deployment_demo.git && cd 0_down_time_deployment_demo && chmod +x deploy.sh && ./deploy.sh && cd -'
+          ssh demo 'git clone https://github.com/bigelio/0_down_time_deployment_demo.git && cd 0_down_time_deployment_demo && chmod +x deploy.sh && ./deploy.sh && cd -'
           # start the rest of services
           ssh demo 'cd 0_down_time_deployment_demo docker-compose up'
