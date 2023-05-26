@@ -48,11 +48,19 @@ jobs:
         run: |
           chmod +x deploy.sh
           # get the private key from the github env and set  necessary permissions
-          echo "$PRIVATE_KEY" > deploy_key && chmod 600 deploy_key
 
-          # Login into remote server
-          ssh -o StrictHostKeyChecking=no -i deploy_key $USER_NAME@$HOSTNAME
+          mkdir -p ~/.ssh/
+          echo "$PRIVATE_KEY" > ~/.ssh/deploy.key
+          chmod 600 ~/.ssh/deploy.key
+          cat >>~/.ssh/config <<END
+          Host demo
+            HostName $HOSTNAME
+            User $USER_NAME
+            IdentityFile ~/.ssh/deploy.key
+            StrictHostKeyChecking no
+          END
+
           # deploy new version of the app container
-          ./deploy.sh
+          ssh demo ./deploy.sh
           # start the rest of services
-          docker-compose up
+          ssh demo docker-compose up
