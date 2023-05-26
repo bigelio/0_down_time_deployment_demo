@@ -59,20 +59,22 @@ jobs:
             IdentityFile ~/.ssh/deploy.key
             StrictHostKeyChecking no
           END
+          # SSH login
+          ssh demo
            # set directory
-          DIR="~/0_down_time_deployment_demo"
+          DIR="0_down_time_deployment_demo"
 
            if [ -d "$DIR" ]; then
 
            # Take action if $DIR exists
 
            # checkout the project folder
-             ssh demo "cd $DIR && git checkout main && \
+             cd $DIR && git checkout main && \
              git fetch --all && \
              git reset --hard origin/main && \
-             git pull origin main && cd -"
-             
-             ssh demo "cd $DIR && chmod +x deploy.sh && ./deploy.sh && cd -"
+             git pull origin main && cd -
+
+             cd $DIR && chmod +x deploy.sh && ./deploy.sh && cd -
 
            else
 
@@ -80,11 +82,11 @@ jobs:
              echo "Started cloning the repo"
 
            # download the sources codes from github
-             ssh demo "git clone https://github.com/bigelio/0_down_time_deployment_demo.git && cd $DIR && chmod +x deploy.sh && ./deploy.sh && cd -"
+             git clone https://github.com/bigelio/0_down_time_deployment_demo.git && cd $DIR && chmod +x deploy.sh && ./deploy.sh && cd -
 
 
            fi
 
           # deploy new version of the app container
           # start the rest of services
-          ssh demo "cd $DIR && docker-compose up && cd -"
+          cd $DIR && docker-compose up && cd -
