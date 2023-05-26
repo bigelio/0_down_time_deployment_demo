@@ -2,20 +2,13 @@ version: "3"
 
 services:
   api-app:
-    build:
-      context: ./api-app
-      dockerfile: Dockerfile
-    image: api-app
+    image: bigelio/api-app:latest
     restart: unless-stopped
     networks:
       - app-network
 
   web-app:
-    build:
-      context: ./web-app
-      dockerfile: Dockerfile
-    image: web-app
-    container_name: web-app
+    image: bigelio/web-app:latest
     restart: unless-stopped
     networks:
       - app-network
