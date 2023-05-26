@@ -51,7 +51,7 @@ jobs:
           echo "$PRIVATE_KEY" > deploy_key && chmod 600 deploy_key
 
           # Login into remote server
-          ssh -o StrictHostKeyChecking=no -i deploy_key ${USER_NAME}@${HOSTNAME}
+          ssh -o StrictHostKeyChecking=no -i deploy_key $USER_NAME@$HOSTNAME
           # deploy new version of the app container
           ./deploy.sh
           # start the rest of services
