@@ -46,7 +46,7 @@ jobs:
           DOCKERHUB_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
           DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
         run: |
-          chmod +x ./deploy.sh
+          chmod +x deploy.sh
           # get the private key from the github env and set  necessary permissions
           echo "$PRIVATE_KEY" > deploy_key && chmod 600 deploy_key
 
