@@ -1,18 +1,17 @@
 
 FROM node:16.15.1-alpine
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-RUN chmod -R 777 /home/node/app
+USER root
+RUN mkdir /tmp/npm &&  chmod 2777 /tmp/npm && chown 1000:1000 /tmp/npm && npm config set cache /tmp/npm --global
 
-WORKDIR /home/node/app
+RUN mkdir  /usr/src
+WORKDIR /usr/src
 
 COPY ./web-app/package*.json ./
 
-USER node
-
 RUN npm install
 
-COPY --chown=node:node . .
+COPY  . .
 
 EXPOSE 3000
 
