@@ -86,7 +86,3 @@ jobs:
 
 
            fi
-
-          # deploy new version of the app container
-          # start the rest of services
-          cd $DIR && docker-compose up && cd -
