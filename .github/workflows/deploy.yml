@@ -48,7 +48,7 @@ jobs:
         run: |
 
           # get the private key from the github env and set  necessary permissions
-
+          HOST=$HOSTNAME && echo $HOST
           mkdir -p ~/.ssh/
           echo "$PRIVATE_KEY" > ~/.ssh/deploy.key
           chmod 600 ~/.ssh/deploy.key
