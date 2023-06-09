@@ -11,7 +11,7 @@ services:
     image: bigelio/web-app:latest
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 3001:3001
     networks:
       - app-network
 
